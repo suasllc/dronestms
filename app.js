@@ -106,7 +106,8 @@ const pushChatMsgs = (chatData) => {
   const data = messageSession.getData(key);
   if (messageSession.conversations[key]) {
     console.log('messageSession.conversations[key]', messageSession.conversations[key]);
-    const arr = Array.from(key);
+    const arr = arrayFromConvoKey(key);
+    console.log('arr', arr);
     arr.forEach(el =>
       people.push(persons.find(p => p.id === el))
     );
