@@ -1,3 +1,7 @@
+const { compress, decompress } = require('shrink-string')
+
+// `compress` takes a unicode string and returns a base64 string
+// `decompress` takes that base64 string and returns the original unicode string
 
 // class User{
 //   constructor(username){
@@ -46,7 +50,7 @@
 // console.log(t2.getP());
 
 
-// lastMessage = {"blocks":[{"key":"3v2g0","text":"fsdfsd342423","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}};
+// lastMessage = {"blocks":[{"key":"3v2g0","text":"fsdfsd342423","type":"usernamestyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}};
 
 
 // const set1 = new Set([1, 2, 3]);
@@ -60,26 +64,38 @@
 // console.log(obj[JSON.stringify(set1)], set1);
 // console.log(obj[JSON.stringify(set2)], set2);
 
-const sortThroughIds = (el1, el2) => el1.id < el2.id ? -1 : 1;
-const array3 = [{ id: 1, un: "tony", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 3, un: "Jesse", st: "dronest.com" }];
-const array4 = [{ id: 2, un: "daniel", st: "dronest.com" }, { id: 3, un: "Jesse", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }];
+const sortThroughIds = (el1, el2) => !el1.id ? -1 : (!el2.id ? 1 : (el1.id < el2.id ? -1 : 1));
+const array3 = [{ site: "dronest.com" }, { id: 1, username: "tony" }, { id: 2, username: "daniel" }, { id: 3, username: "Jesse" }];
+const array4 = [{ site: "dronest.com" }, { id: 2, username: "daniel" }, { id: 3, username: "Jesse" }, { id: 4, username: "Joe" }, { id: 5, username: "Sami" }];
 let array5 = [];
 
-const arr5 = [{ id: 3, un: "Jesse", st: "dronest.com" }, {id: 3, un: "Jesse", st: "dronest.com" }, 
-  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
-  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
-  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
-  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
-  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
+const arr5 = [{ id: 3, username: "Jesse" }, { id: 3, username: "Jesse" },
+{ id: 4, username: "Joe" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" },
+{ id: 5, username: "Sami" },
+{ id: 4, username: "Joe" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" },
+{ id: 4, username: "Joe" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" },
+{ id: 5, username: "Sami" },
+{ id: 4, username: "Joe" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" },
+{ id: 4, username: "Joe" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" },
+{ id: 5, username: "Sami" },
+{ id: 5, username: "Sami" },
+{ site: "dronest.com" },
+{ id: 4, username: "Joe" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" },
+{ id: 4, username: "Joe" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" },
+{ id: 5, username: "Sami" },
+{ id: 5, username: "Sami" },
+{ site: "dronest.com" }
 ];
 // arr5.forEach(el => array5.push(el));
 array5 = arr5;
+array5.push({ id: 6, username: "Michelle" })
 
-const keyFromArray = arr => Array.from(new Set(arr.sort(sortThroughIds).map(el => JSON.stringify(el))));
+const keyFromUserArray = arr => Array.from(new Set(arr.sort(sortThroughIds).map(el => JSON.stringify(el))));
+const arrayFromConvoKey = key => Array.isArray(key) ? key.map(el => JSON.parse(el)) : key;
 
-const key3 = keyFromArray(array3);
-const key4 = keyFromArray(array4);
-const key5 = keyFromArray(array5);
+const key3 = keyFromUserArray(array3);
+const key4 = keyFromUserArray(array4);
+const key5 = keyFromUserArray(array5);
 
 // console.log('array3', array3);
 // console.log('array4', array4);
@@ -87,12 +103,30 @@ const key5 = keyFromArray(array5);
 console.log('key3', key3);
 console.log('key4', key4);
 console.log('key5', key5);
+console.log('parsed: key3', arrayFromConvoKey(key3));
+console.log('parsed: key4', arrayFromConvoKey(key4));
+console.log('parsed: key5', arrayFromConvoKey(key5));
 const obj2 = {};
 obj2[key3] = "array3";
 obj2[key4] = "array4";
+obj2[key5] = arrayFromConvoKey(key5);
 
-console.log(obj2[key3]);
-console.log(obj2[key4]);
+console.log(obj2[key3], obj2[key5] === obj2[key3]);
+console.log(obj2[key4], obj2[key3] === obj2[key4]);
 console.log(obj2[key5], obj2[key5] === obj2[key4]);
 
+console.log(obj2);
 
+
+// const encoder = new TextEncoder();
+// const view = encoder.encode(key5);
+// console.log(view, view.length, key5.reduce((acum, el) => acum += el.length, 0)); // Uint8Array(3) [226, 130, 172]
+
+const thing = async (s = key5.toString()) => {
+  const shrunk = await compress(s);
+  const expanded = await decompress(shrunk);
+  console.log(shrunk, s, s === expanded);
+  console.log(s.length, shrunk.length);
+}
+
+thing();

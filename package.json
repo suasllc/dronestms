@@ -20,6 +20,7 @@
     "per-env": "^1.0.2",
     "pg": "^8.5.1",
     "sequelize": "^6.5.0",
+    "shrink-string": "^3.0.9",
     "ws": "^7.4.2"
   },
   "devDependencies": {
