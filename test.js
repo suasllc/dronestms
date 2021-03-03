@@ -61,25 +61,38 @@
 // console.log(obj[JSON.stringify(set2)], set2);
 
 const sortThroughIds = (el1, el2) => el1.id < el2.id ? -1 : 1;
-const set3 = new Set([{ id: 1, username: "tony" }, { id: 2, username: "daniel" }, { id: 3, username: "Jesse" }]);
-const set4 = new Set([{ id: 2, username: "daniel" }, { id: 3, username: "Jesse" }, { id: 4, username: "Joe" }]);
-const set5 = new Set([{ id: 3, username: "Jesse" }, { id: 4, username: "Joe" }, { id: 2, username: "daniel" }]);
+const array3 = [{ id: 1, un: "tony", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 3, un: "Jesse", st: "dronest.com" }];
+const array4 = [{ id: 2, un: "daniel", st: "dronest.com" }, { id: 3, un: "Jesse", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }];
+let array5 = [];
 
-const keyFromSet = set => JSON.stringify(Array.from(set).sort(sortThroughIds));
+const arr5 = [{ id: 3, un: "Jesse", st: "dronest.com" }, {id: 3, un: "Jesse", st: "dronest.com" }, 
+  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
+  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
+  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
+  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
+  { id: 4, un: "Joe", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" }, { id: 4, un: "Joe", st: "dronest.com" }, { id: 2, un: "daniel", st: "dronest.com" },
+];
+// arr5.forEach(el => array5.push(el));
+array5 = arr5;
 
-const key3 = keyFromSet(set3);
-const key4 = keyFromSet(set4);
-const key5 = keyFromSet(set5);
+const keyFromArray = arr => Array.from(new Set(arr.sort(sortThroughIds).map(el => JSON.stringify(el))));
 
-// console.log('set3', set3);
-// console.log('set4', set4);
-// console.log('set5', set5);
+const key3 = keyFromArray(array3);
+const key4 = keyFromArray(array4);
+const key5 = keyFromArray(array5);
+
+// console.log('array3', array3);
+// console.log('array4', array4);
+// console.log('array5', array5);
+console.log('key3', key3);
+console.log('key4', key4);
+console.log('key5', key5);
 const obj2 = {};
-obj2[key3] = "set3";
-obj2[key4] = "set4";
+obj2[key3] = "array3";
+obj2[key4] = "array4";
 
-console.log(obj2[key3], set3);
-console.log(obj2[key4], set4);
-console.log(obj2[key5], set5);
+console.log(obj2[key3]);
+console.log(obj2[key4]);
+console.log(obj2[key5], obj2[key5] === obj2[key4]);
 
 
