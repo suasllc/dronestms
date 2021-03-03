@@ -2,6 +2,9 @@
 
 const { User, DirectMessage } = require('./db/models');
 const { Op } = require('sequelize');
+const { keyFromUserArray, arrayFromConvoKey } = require('./helpers');
+const e = require('express');
+
 
 
 class Person {
@@ -68,8 +71,8 @@ class MessageSession {
   }
 
   getConversationMessages(convoKey){
-    if(!(convoKey instanceof Set)) return [];
-    const arr = Array.from(convoKey);
+    // if(!(convoKey instanceof Set)) return [];
+    const arr = arrayFromConvoKey(convoKey).map(el => el.id);
     return this.messages.filter(m => arr.includes(m.senderId) && arr.includes(m.receiverId));
   }
 

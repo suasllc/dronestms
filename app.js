@@ -47,7 +47,7 @@ const broadcastMessage = (type, data, persons) => {
     data,
   });
 
-  // console.log(`Broadcasting message ${message}...`);
+  console.log(`Broadcasting message ${message}...`);
 
   persons.forEach((person) => {
     // console.log(person.ws.readyState);
@@ -109,7 +109,7 @@ const pushChatMsgs = (chatData) => {
     const arr = arrayFromConvoKey(key);
     console.log('arr', arr);
     arr.forEach(el =>
-      people.push(persons.find(p => p.id === el))
+      people.push(persons.find(p => p.id === el.id && p.username === el.username))
     );
   } else {
     if (senderId && receiverId && (senderId !== receiverId)) {
@@ -125,7 +125,7 @@ const pushChatMsgs = (chatData) => {
       //   }
     }
   }
-  // console.log('People', people);
+  console.log('People', people.map(el => el.id));
   if (people.length > 1) broadcastMessage('update-message-session', data, people);
 };
 
