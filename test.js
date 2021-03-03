@@ -1,4 +1,3 @@
-const { compress, decompress } = require('shrink-string')
 
 // `compress` takes a unicode string and returns a base64 string
 // `decompress` takes that base64 string and returns the original unicode string
@@ -90,8 +89,8 @@ const arr5 = [{ id: 3, username: "Jesse" }, { id: 3, username: "Jesse" },
 array5 = arr5;
 array5.push({ id: 6, username: "Michelle" })
 
-const keyFromUserArray = arr => Array.from(new Set(arr.sort(sortThroughIds).map(el => JSON.stringify(el))));
-const arrayFromConvoKey = key => Array.isArray(key) ? key.map(el => JSON.parse(el)) : key;
+const keyFromUserArray = arr => Array.from(new Set(arr.sort(sortThroughIds).map(el => JSON.stringify(el).replaceAll(':', '::'))));
+const arrayFromConvoKey = key => Array.isArray(key) ? key.map(el => JSON.parse(el.replaceAll('::', ':'))) : key;
 
 const key3 = keyFromUserArray(array3);
 const key4 = keyFromUserArray(array4);
@@ -122,11 +121,25 @@ console.log(obj2);
 // const view = encoder.encode(key5);
 // console.log(view, view.length, key5.reduce((acum, el) => acum += el.length, 0)); // Uint8Array(3) [226, 130, 172]
 
-const thing = async (s = key5.toString()) => {
-  const shrunk = await compress(s);
-  const expanded = await decompress(shrunk);
-  console.log(shrunk, s, s === expanded);
-  console.log(s.length, shrunk.length);
-}
 
-thing();
+// console.log(key5.toString());
+// console.log(Buffer.from(key5.toString()).toString('binary'));
+
+// const encoded = key5.map(el => Buffer.from(el).toString('base64'));
+// console.log('encoded', encoded);
+// const decoded = encoded.map(el => Buffer.from(el, 'base64').toString('ascii'))
+// console.log('decoded', decoded);
+// console.log('decoded', arrayFromConvoKey(decoded));
+
+
+// var raw_text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+ 
+// var hm = new jsscompress.Hauffman();
+// var compressed = hm.compress(raw_text);
+ 
+// console.log("before compressed: " + raw_text);
+// console.log("length: " + raw_text.length);
+// console.log("after compressed: " + compressed);
+// console.log("length: " + compressed.length);
+ 
+// console.log("decompressed: " + hm.decompress(compressed));
