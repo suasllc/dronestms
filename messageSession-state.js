@@ -71,7 +71,6 @@ class MessageSession {
   }
 
   getConversationMessages(convoKey){
-    // if(!(convoKey instanceof Set)) return [];
     const arr = arrayFromConvoKey(convoKey).map(el => el.id);
     return this.messages.filter(m => arr.includes(m.senderId) && arr.includes(m.receiverId));
   }
