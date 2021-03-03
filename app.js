@@ -161,6 +161,7 @@ const addAChatFriend = (data) => {
     let myself, friend;
     if (messageSession.peopleUnObj[myUsername] !== undefined) {
       myself = messageSession.peopleArr.find(p => p.username === myUsername).getData();
+      if(myself.id !== myId) return; //Error, my data not matched
       if (myself) {
         console.log("myself", myself);
         // const convoId = new Set()
@@ -169,6 +170,7 @@ const addAChatFriend = (data) => {
     }
     if (messageSession.peopleUnObj[friendUsername] !== undefined) {
       friend = messageSession.peopleArr.find(p => p.username === friendUsername).getData();
+      if(friend.id !== friendId) return; //Error, friend data not matched
       if (friend) {
         console.log("friend", friend);
         // const convoId = new Set()
@@ -176,11 +178,16 @@ const addAChatFriend = (data) => {
       }
     }
     if (myself && friend && (myself !== friend)) {
-      const convoId = new Set([myself.id, friend.id]);
-      messageSession.conversations[convoId] = {
-        usernames: [myself.username, friend.username],
-        userIds: [myself.id, friend.id],
-      };
+      if (messageSession.conversations[convoId]) {
+        messageSession.conversations[convoId].usernames.push(friend.username);
+        messageSession.conversations[convoId].userIds.push(friend.id);
+      } else {
+        const newConvoId = new Set([myself.id, myself.username, friend.id, friend.username]);
+        messageSession.conversations[newConvoId] = {
+          usernames: [myself.username, friend.username],
+          userIds: [myself.id, friend.id],
+        };
+      }
       console.log(messageSession.conversations);
     }
   }
