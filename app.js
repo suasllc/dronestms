@@ -108,22 +108,23 @@ const addNewPerson = (id, username, ws) => {
 const pushChatMsgs = (chatData) => {
   const persons = messageSession.getPersons();
   const people = [];
-  let { senderId, senderName, receiverIds, receiverNames } = chatData;
+  let { senderId, senderName, receiverIds, receiverNames, convoKey } = chatData;
+  console.log('112 chatData', chatData);
   if (receiverIds.length !== receiverNames.length) return;
   // const key = new Set([senderId, receiverId]);
-  const receiverArr = receiverIds.map((id, i) => ({ id, username: receiverNames[i] }));
-  const key = convoKeyFromUserArray([{ id: senderId, username: senderName }, ...receiverArr]);
-  const data = messageSession.getData(key);
-  if (messageSession.conversations[key]) {
-    console.log('109 messageSession.conversations[key]', messageSession.conversations[key]);
-    const arr = userArrayFromConvoKey(key);
+  // const receiverArr = receiverIds.map((id, i) => ({ id, username: receiverNames[i] }));
+  // const key = convoKeyFromUserArray([{ id: senderId, username: senderName }, ...receiverArr]);
+  const data = messageSession.getData(convoKey);
+  if (messageSession.conversations[convoKey]) {
+    console.log('109 messageSession.conversations[kconvoKeyey]', messageSession.conversations[convoKey]);
+    const arr = userArrayFromConvoKey(convoKey);
     console.log('arr', arr);
     arr.forEach(el =>
       people.push(persons.find(p => p.id === el.id && p.username === el.username))
     );
   } else {
     if (senderId && receiverIds.length && (!receiverIds.includes(senderId))) {
-      messageSession.conversations[key] = {
+      messageSession.conversations[convoKey] = {
         usernames: [senderName, ...receiverNames],
         userIds: [senderId, ...receiverIds],
       };
@@ -136,7 +137,6 @@ const pushChatMsgs = (chatData) => {
     }
   }
   if (people.length > 1) {
-    console.log('People', people.map(el => el.id));
     broadcastMessage('update-message-session', data, people);
   }
 };
