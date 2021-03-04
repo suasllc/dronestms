@@ -135,8 +135,10 @@ const pushChatMsgs = (chatData) => {
       //   }
     }
   }
-  console.log('People', people.map(el => el.id));
-  if (people.length > 1) broadcastMessage('update-message-session', data, people);
+  if (people.length > 1) {
+    console.log('People', people.map(el => el.id));
+    broadcastMessage('update-message-session', data, people);
+  }
 };
 
 
@@ -169,6 +171,7 @@ const recordChat = async (chatData) => {
 
 const addAChatFriend = (data) => {
   const { myId, myUsername, friendId, friendUsername, convoKey } = data;
+  console.log(data);
   // console.log(messageSession.peopleUnObj[username]);
   if (messageSession) {
     let myself, friend;
@@ -183,26 +186,33 @@ const addAChatFriend = (data) => {
     }
     if (messageSession.peopleUnObj[friendUsername] !== undefined) {
       friend = messageSession.peopleArr.find(p => p.username === friendUsername).getData();
-      if (friend.id !== friendId) return; //Error, friend data not matched
+      // if (friend.id !== friendId) return; //Error, friend data not matched
       if (friend) {
         console.log("friend", friend);
         // const convoKey = new Set()
         // messageSession.conversations.push();
       }
     }
-    if (myself && friend && (myself !== friend)) {
-      // if (messageSession.conversations[convoKey]) {
-      //   messageSession.conversations[convoKey].usernames.push(friend.username);
-      //   messageSession.conversations[convoKey].userIds.push(friend.id);
-      // } else {
-      // const newconvoKey = new Set([myself.id, myself.username, friend.id, friend.username]);
-      const newconvoKey = convoKeyFromUserArray([myself, friend]);
-      messageSession.conversations[newconvoKey] = {
-        usernames: [myself.username, friend.username],
-        userIds: [myself.id, friend.id],
-      };
+    if (myself && (myself !== friend)) {
+      const arr = userArrayFromConvoKey(convoKey);
+      console.log('198', arr);
+      // if (friend) {
+        if (messageSession.conversations[convoKey]) {
+          const newconvoKey = convoKeyFromUserArray([...arr, {id: friendId, username: friendUsername}]);
+          messageSession.conversations[newconvoKey] = {
+            usernames: [...messageSession.conversations[convoKey].usernames, friendUsername],
+            userIds: [...messageSession.conversations[convoKey].userIds, friendId],
+          };
+        } else {
+          // const newconvoKey = new Set([myself.id, myself.username, friend.id, friend.username]);
+          const newconvoKey = convoKeyFromUserArray([arr[0], myself, {id: friendId, username: friendUsername}]);
+          messageSession.conversations[newconvoKey] = {
+            usernames: [myself.username, friendUsername],
+            userIds: [myself.id, friendId],
+          };
+        }
       // }
-      console.log(messageSession.conversations);
+      console.log("208", messageSession.conversations);
     }
   }
 }
