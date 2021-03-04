@@ -197,21 +197,45 @@ const addAChatFriend = (data) => {
       const arr = userArrayFromConvoKey(convoKey);
       console.log('198', arr);
       // if (friend) {
-        if (messageSession.conversations[convoKey]) {
-          const newconvoKey = convoKeyFromUserArray([...arr, {id: friendId, username: friendUsername}]);
-          messageSession.conversations[newconvoKey] = {
-            usernames: [...messageSession.conversations[convoKey].usernames, friendUsername],
-            userIds: [...messageSession.conversations[convoKey].userIds, friendId],
-          };
-        } else {
-          // const newconvoKey = new Set([myself.id, myself.username, friend.id, friend.username]);
-          const newconvoKey = convoKeyFromUserArray([arr[0], myself, {id: friendId, username: friendUsername}]);
-          messageSession.conversations[newconvoKey] = {
-            usernames: [myself.username, friendUsername],
-            userIds: [myself.id, friendId],
-          };
-        }
+      if (messageSession.conversations[convoKey]) {
+        const newconvoKey = convoKeyFromUserArray([...arr, { id: friendId, username: friendUsername }]);
+        messageSession.conversations[newconvoKey] = {
+          usernames: [...messageSession.conversations[convoKey].usernames, friendUsername],
+          userIds: [...messageSession.conversations[convoKey].userIds, friendId],
+        };
+      } else {
+        // const newconvoKey = new Set([myself.id, myself.username, friend.id, friend.username]);
+        const newconvoKey = convoKeyFromUserArray([arr[0], myself, { id: friendId, username: friendUsername }]);
+        messageSession.conversations[newconvoKey] = {
+          usernames: [myself.username, friendUsername],
+          userIds: [myself.id, friendId],
+        };
+      }
       // }
+      console.log("208", messageSession.conversations);
+    }
+  }
+}
+const startAGroupConvo = (data) => {
+  const { myId, myUsername, convoKey } = data;
+  console.log('221', data);
+  if (messageSession) {
+    let myself;
+    if (messageSession.peopleUnObj[myUsername] !== undefined) {
+      myself = messageSession.peopleArr.find(p => p.username === myUsername).getData();
+      if (myself.id !== myId) return; //Error, my data not matched
+    }
+
+    if (myself) {
+      const arr = userArrayFromConvoKey(convoKey);
+      if (Array.isArray(arr)) arr.shift(); //remove the first element
+      console.log('231', arr);
+      if (!messageSession.conversations[convoKey]) {
+        messageSession.conversations[convoKey] = {
+          usernames: [...arr.map(el => el.username)],
+          userIds: [...arr.map(el => el.id)],
+        };
+      }
       console.log("208", messageSession.conversations);
     }
   }
@@ -232,6 +256,9 @@ const processIncomingMessage = (jsonData, ws) => {
       break;
     case 'add-chat-friend':
       addAChatFriend(message.data);
+      break;
+    case 'start-a-group-convo':
+      startAGroupConvo(message.data);
       break;
     default:
       throw new Error(`Unknown message type: ${message.type}`);
