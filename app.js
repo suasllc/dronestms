@@ -52,8 +52,10 @@ const broadcastMessage = (type, data, persons) => {
     //TODO: broadcast to only the person in the conversation
     if (person && person.ws && person.ws.readyState === 1) {
       if (message.data.messages && message.data.messages.length) {
-        message.data.messages[0].receiverId = person.id;
-        message.data.messages[0].receiverName = person.username;
+        if (message.data.messages[0].senderId !== person.id) {
+          message.data.messages[0].receiverId = person.id;
+          message.data.messages[0].receiverName = person.username;
+        }
       }
 
       console.log('Broadcasting message:');
