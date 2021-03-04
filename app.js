@@ -108,14 +108,14 @@ const pushChatMsgs = (chatData) => {
   const persons = messageSession.getPersons();
   const people = [];
   let { senderId, senderName, receiverIds, receiverNames, convoKey } = chatData;
-  // console.log('112 chatData', chatData);
+  console.log('112 chatData', chatData);
   if (receiverIds.length !== receiverNames.length) return;
   // const key = new Set([senderId, receiverId]);
   // const receiverArr = receiverIds.map((id, i) => ({ id, username: receiverNames[i] }));
   // const key = convoKeyFromUserArray([{ id: senderId, username: senderName }, ...receiverArr]);
   const data = messageSession.getData(convoKey);
   if (messageSession.conversations[convoKey]) {
-    // console.log('109 messageSession.conversations[kconvoKeyey]', messageSession.conversations[convoKey]);
+    console.log('109 messageSession.conversations[kconvoKeyey]', messageSession.conversations[convoKey]);
     const arr = userArrayFromConvoKey(convoKey);
     // console.log('arr', arr);
     arr.forEach(el =>
@@ -194,7 +194,7 @@ const addAChatFriend = (data) => {
     }
     if (myself && (myself !== friend)) {
       const arr = userArrayFromConvoKey(convoKey);
-      // console.log('198', arr);
+      console.log('198', arr);
       // if (friend) {
       if (messageSession.conversations[convoKey]) {
         const newconvoKey = convoKeyFromUserArray([...arr, { id: friendId, username: friendUsername }]);
