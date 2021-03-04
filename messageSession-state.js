@@ -71,8 +71,13 @@ class MessageSession {
   }
 
   getConversationMessages(convoKey){
+    //TODO: also make sure username matchs
     const arr = arrayFromConvoKey(convoKey).map(el => el.id);
-    return this.messages.filter(m => arr.includes(m.senderId) && arr.includes(m.receiverId));
+    const msgs = this.messages.filter(m => arr.includes(m.senderId) && 
+      m.receiverIds.every(id => arr.includes(id)));
+    if(msgs && msgs.length) {
+      return [msgs.pop()];
+    }
   }
 
   async checkDB() {
