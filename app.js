@@ -117,7 +117,7 @@ const pushChatMsgs = (chatData) => {
   if (messageSession.conversations[convoKey]) {
     console.log('109 messageSession.conversations[kconvoKeyey]', messageSession.conversations[convoKey]);
     const arr = userArrayFromConvoKey(convoKey);
-    // console.log('arr', arr);
+    console.log('arr', arr);
     arr.forEach(el =>
       people.push(persons.find(p => p.id === el.id && p.username === el.username))
     );
