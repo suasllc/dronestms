@@ -60,7 +60,6 @@ const broadcastMessage = (type, data, persons) => {
 
       console.log('Broadcasting message:');
       console.log(message);
-      console.log(JSON.stringify(message));
 
       person.ws.send(JSON.stringify(message), (err) => {
         if (err) {
@@ -109,16 +108,16 @@ const pushChatMsgs = (chatData) => {
   const persons = messageSession.getPersons();
   const people = [];
   let { senderId, senderName, receiverIds, receiverNames, convoKey } = chatData;
-  console.log('112 chatData', chatData);
+  // console.log('112 chatData', chatData);
   if (receiverIds.length !== receiverNames.length) return;
   // const key = new Set([senderId, receiverId]);
   // const receiverArr = receiverIds.map((id, i) => ({ id, username: receiverNames[i] }));
   // const key = convoKeyFromUserArray([{ id: senderId, username: senderName }, ...receiverArr]);
   const data = messageSession.getData(convoKey);
   if (messageSession.conversations[convoKey]) {
-    console.log('109 messageSession.conversations[kconvoKeyey]', messageSession.conversations[convoKey]);
+    // console.log('109 messageSession.conversations[kconvoKeyey]', messageSession.conversations[convoKey]);
     const arr = userArrayFromConvoKey(convoKey);
-    console.log('arr', arr);
+    // console.log('arr', arr);
     arr.forEach(el =>
       people.push(persons.find(p => p.id === el.id && p.username === el.username))
     );
@@ -171,7 +170,7 @@ const recordChat = async (chatData) => {
 
 const addAChatFriend = (data) => {
   const { myId, myUsername, friendId, friendUsername, convoKey } = data;
-  console.log(data);
+  // console.log(data);
   // console.log(messageSession.peopleUnObj[username]);
   if (messageSession) {
     let myself, friend;
@@ -195,7 +194,7 @@ const addAChatFriend = (data) => {
     }
     if (myself && (myself !== friend)) {
       const arr = userArrayFromConvoKey(convoKey);
-      console.log('198', arr);
+      // console.log('198', arr);
       // if (friend) {
       if (messageSession.conversations[convoKey]) {
         const newconvoKey = convoKeyFromUserArray([...arr, { id: friendId, username: friendUsername }]);
@@ -212,13 +211,13 @@ const addAChatFriend = (data) => {
         };
       }
       // }
-      console.log("208", messageSession.conversations);
+      // console.log("208", messageSession.conversations);
     }
   }
 }
 const startAGroupConvo = (data) => {
   const { myId, myUsername, convoKey } = data;
-  console.log('221', data);
+  // console.log('221', data);
   if (messageSession) {
     let myself;
     if (messageSession.peopleUnObj[myUsername] !== undefined) {
@@ -229,14 +228,14 @@ const startAGroupConvo = (data) => {
     if (myself) {
       const arr = userArrayFromConvoKey(convoKey);
       if (Array.isArray(arr)) arr.shift(); //remove the first element
-      console.log('231', arr);
+      // console.log('231', arr);
       if (!messageSession.conversations[convoKey]) {
         messageSession.conversations[convoKey] = {
           usernames: [...arr.map(el => el.username)],
           userIds: [...arr.map(el => el.id)],
         };
       }
-      console.log("208", messageSession.conversations);
+      // console.log("208", messageSession.conversations);
     }
   }
 }
