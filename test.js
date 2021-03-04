@@ -89,12 +89,12 @@ const arr5 = [{ id: 3, username: "Jesse" }, { id: 3, username: "Jesse" },
 array5 = arr5;
 array5.push({ id: 6, username: "Michelle" })
 
-const keyFromUserArray = arr => Array.from(new Set(arr.sort(sortThroughIds).map(el => JSON.stringify(el).replaceAll(':', '::'))));
-const arrayFromConvoKey = key => Array.isArray(key) ? key.map(el => JSON.parse(el.replaceAll('::', ':'))) : key;
+const convoKeyFromUserArray = arr => Array.from(new Set(arr.sort(sortThroughIds).map(el => JSON.stringify(el).replaceAll(':', '::'))));
+const userArrayFromConvoKey = key => Array.isArray(key) ? key.map(el => JSON.parse(el.replaceAll('::', ':'))) : key;
 
-const key3 = keyFromUserArray(array3);
-const key4 = keyFromUserArray(array4);
-const key5 = keyFromUserArray(array5);
+const key3 = convoKeyFromUserArray(array3);
+const key4 = convoKeyFromUserArray(array4);
+const key5 = convoKeyFromUserArray(array5);
 
 // console.log('array3', array3);
 // console.log('array4', array4);
@@ -102,13 +102,13 @@ const key5 = keyFromUserArray(array5);
 console.log('key3', key3);
 console.log('key4', key4);
 console.log('key5', key5);
-console.log('parsed: key3', arrayFromConvoKey(key3));
-console.log('parsed: key4', arrayFromConvoKey(key4));
-console.log('parsed: key5', arrayFromConvoKey(key5));
+console.log('parsed: key3', userArrayFromConvoKey(key3));
+console.log('parsed: key4', userArrayFromConvoKey(key4));
+console.log('parsed: key5', userArrayFromConvoKey(key5));
 const obj2 = {};
 obj2[key3] = "array3";
 obj2[key4] = "array4";
-obj2[key5] = arrayFromConvoKey(key5);
+obj2[key5] = userArrayFromConvoKey(key5);
 
 console.log(obj2[key3], obj2[key5] === obj2[key3]);
 console.log(obj2[key4], obj2[key3] === obj2[key4]);
@@ -129,7 +129,7 @@ console.log(obj2);
 // console.log('encoded', encoded);
 // const decoded = encoded.map(el => Buffer.from(el, 'base64').toString('ascii'))
 // console.log('decoded', decoded);
-// console.log('decoded', arrayFromConvoKey(decoded));
+// console.log('decoded', userArrayFromConvoKey(decoded));
 
 
 // var raw_text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";

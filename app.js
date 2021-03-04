@@ -8,7 +8,7 @@ const WebSocket = require('ws');
 const { port } = require('./config');
 const { MessageSession, Person } = require('./messageSession-state');
 const { User, DirectMessage } = require('./db/models');
-const { keyFromUserArray, arrayFromConvoKey } = require('./helpers');
+const { convoKeyFromUserArray, userArrayFromConvoKey } = require('./utils');
 
 
 
@@ -112,11 +112,11 @@ const pushChatMsgs = (chatData) => {
   if (receiverIds.length !== receiverNames.length) return;
   // const key = new Set([senderId, receiverId]);
   const receiverArr = receiverIds.map((id, i) => ({ id, username: receiverNames[i] }));
-  const key = keyFromUserArray([{ id: senderId, username: senderName }, ...receiverArr]);
+  const key = convoKeyFromUserArray([{ id: senderId, username: senderName }, ...receiverArr]);
   const data = messageSession.getData(key);
   if (messageSession.conversations[key]) {
     console.log('109 messageSession.conversations[key]', messageSession.conversations[key]);
-    const arr = arrayFromConvoKey(key);
+    const arr = userArrayFromConvoKey(key);
     console.log('arr', arr);
     arr.forEach(el =>
       people.push(persons.find(p => p.id === el.id && p.username === el.username))
@@ -196,7 +196,7 @@ const addAChatFriend = (data) => {
       //   messageSession.conversations[convoKey].userIds.push(friend.id);
       // } else {
       // const newconvoKey = new Set([myself.id, myself.username, friend.id, friend.username]);
-      const newconvoKey = keyFromUserArray([myself, friend]);
+      const newconvoKey = convoKeyFromUserArray([myself, friend]);
       messageSession.conversations[newconvoKey] = {
         usernames: [myself.username, friend.username],
         userIds: [myself.id, friend.id],
