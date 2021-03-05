@@ -79,8 +79,9 @@ const startMessageSession = async () => {
   broadcastMessage('start-message-session', data, [personToBroadcastTo]);
 };
 
-const updateListOfOnlineUsers = async () => {
-  const data = messageSession.peopleArr.map(p => p.getData());
+const updateListOfOnlineUsers = async (site) => {
+  const filteredListOfUsersFromThisSite = messageSession.peopleArr.filter(p => p.site === site);
+  const data = filteredListOfUsersFromThisSite.map(p => p.getData());
   //TODO: send the list of online people when they are only on the followers or following list
   // await messageSession.checkDB();
   broadcastMessage('update-online-user-list', data, messageSession.peopleArr);
@@ -98,7 +99,7 @@ const addNewPerson = (id, username, site, ws) => {
   }
   if (messageSession.peopleArr.length >= 1) {
     startMessageSession();
-    updateListOfOnlineUsers();
+    updateListOfOnlineUsers(site);
   } else {
     ws.close();
   }
@@ -119,7 +120,7 @@ const pushChatMsgs = (chatData) => {
     const arr = userArrayFromConvoKey(convoKey);
     console.log('arr', arr);
     arr.forEach(el =>
-      people.push(persons.find(p => p.id === el.id && p.username === el.username))
+      people.push(persons.find(p => p.id === el.id && p.username === el.username && p.site === el.site))
     );
   } else {
     if (senderId && receiverIds.length && (!receiverIds.includes(senderId))) {
@@ -170,34 +171,21 @@ const recordChat = async (chatData) => {
 
 const addAChatFriend = (data) => {
   const { myId, myUsername, friendId, friendUsername, convoKey, site } = data;
-  // console.log(data);
-  // console.log(messageSession.peopleUnObj[username]);
   if (messageSession) {
-    let myself, friend;
+    let myself;
     if (messageSession.peopleUnObj[myUsername] !== undefined) {
-      myself = messageSession.peopleArr.find(p => (p.username === myUsername) && (p.site === site));
-      if(!myself) return;
+      myself = messageSession.peopleArr.find(p => (p.id === myId) && (p.username === myUsername) && (p.site === site));
+      if (!myself) return;
       myself = myself.getData();
-      if (myself.id !== myId) return; //Error, my data not matched
       if (myself) {
         console.log("myself", myself);
-        // const convoKey = new Set()
-        // messageSession.conversations.push();
       }
     }
-    // if (messageSession.peopleUnObj[friendUsername] !== undefined) {
-    //   friend = messageSession.peopleArr.find(p => (p.username === friendUsername) && (p.site === site)).getData();
-    //   // if (friend.id !== friendId) return; //Error, friend data not matched
-    //   if (friend) {
-    //     console.log("friend", friend);
-    //     // const convoKey = new Set()
-    //     // messageSession.conversations.push();
-    //   }
-    // }
+    let friend = messageSession.peopleArr.find(p => (p.id === myId) && (p.username === myUsername) && (p.site === site));
+    if (friend) friend = friend.getData();
     if (myself && (myself !== friend)) {
       const arr = userArrayFromConvoKey(convoKey);
       console.log('198', arr);
-      // if (friend) {
       if (messageSession.conversations[convoKey]) {
         const newconvoKey = convoKeyFromUserArray([...arr, { id: friendId, username: friendUsername, site }]);
         messageSession.conversations[newconvoKey] = {
@@ -205,39 +193,37 @@ const addAChatFriend = (data) => {
           userIds: [...messageSession.conversations[convoKey].userIds, friendId],
         };
       } else {
-        // const newconvoKey = new Set([myself.id, myself.username, friend.id, friend.username]);
         const newconvoKey = convoKeyFromUserArray([arr[0], myself, { id: friendId, username: friendUsername, site }]);
         messageSession.conversations[newconvoKey] = {
           usernames: [myself.username, friendUsername],
           userIds: [myself.id, friendId],
         };
       }
-      // }
-      // console.log("208", messageSession.conversations);
     }
   }
 }
 const startAGroupConvo = (data) => {
-  const { myId, myUsername, convoKey } = data;
+  const { myId, myUsername, site, convoKey } = data;
   // console.log('221', data);
   if (messageSession) {
-    let myself;
     if (messageSession.peopleUnObj[myUsername] !== undefined) {
-      myself = messageSession.peopleArr.find(p => p.username === myUsername).getData();
-      if (myself.id !== myId) return; //Error, my data not matched
-    }
+      let myself;
+      myself = messageSession.peopleArr.find(p => (p.id === myId) && (p.username === myUsername) && (p.site === site));
+      if (!myself) return;
+      myself = myself.getData();
 
-    if (myself) {
-      const arr = userArrayFromConvoKey(convoKey);
-      if (Array.isArray(arr)) arr.shift(); //remove the first element
-      // console.log('231', arr);
-      if (!messageSession.conversations[convoKey]) {
-        messageSession.conversations[convoKey] = {
-          usernames: [...arr.map(el => el.username)],
-          userIds: [...arr.map(el => el.id)],
-        };
+      if (myself) {
+        const arr = userArrayFromConvoKey(convoKey);
+        if (Array.isArray(arr)) arr.shift(); //remove the first element
+        // console.log('231', arr);
+        if (!messageSession.conversations[convoKey]) {
+          messageSession.conversations[convoKey] = {
+            usernames: [...arr.map(el => el.username)],
+            userIds: [...arr.map(el => el.id)],
+          };
+        }
+        // console.log("208", messageSession.conversations);
       }
-      // console.log("208", messageSession.conversations);
     }
   }
 }
@@ -292,7 +278,7 @@ wss.on('connection', (ws) => {
           delete messageSession.conversations[key];
         }
       }
-      updateListOfOnlineUsers();
+      updateListOfOnlineUsers(personLeft.site);
       console.log('person left', personLeft.id, personLeft.username, personLeft.site);
     }
     if (!messageSession.peopleArr.length) {
