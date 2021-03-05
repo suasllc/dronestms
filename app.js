@@ -260,7 +260,8 @@ const processIncomingMessage = (jsonData, ws) => {
       startAGroupConvo(message.data);
       break;
     default:
-      throw new Error(`Unknown message type: ${message.type}`);
+      console.log(`Unknown message type: ${message.type}`);
+      break;
   }
 };
 
