@@ -250,6 +250,8 @@ const processIncomingMessage = (jsonData, ws) => {
     case 'add-new-person':
       addNewPerson(message.data.userId, message.data.username, ws);
       break;
+    case 'heart-beat':
+      break;
     case 'chat-message':
       recordChat(message.data, ws);
       break;
@@ -287,6 +289,7 @@ wss.on('connection', (ws) => {
           delete messageSession.conversations[key];
         }
       }
+      updateListOfOnlineUsers();
     }
     if (!messageSession.peopleArr.length) {
       messageSession = null;
