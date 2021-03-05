@@ -8,9 +8,10 @@ const e = require('express');
 
 
 class Person {
-  constructor(id, username, ws) {
+  constructor(id, username, site, ws) {
     this.id = id;
     this.username = username;
+    this.site = site;
     this.ws = ws;
   }
 
@@ -18,6 +19,7 @@ class Person {
     return {
       id: this.id,
       username: this.username,
+      site: this.site,
     };
   }
 }

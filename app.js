@@ -86,8 +86,8 @@ const updateListOfOnlineUsers = async () => {
   broadcastMessage('update-online-user-list', data, messageSession.peopleArr);
 };
 
-const addNewPerson = (id, username, ws) => {
-  const person = new Person(id, username, ws);
+const addNewPerson = (id, username, site, ws) => {
+  const person = new Person(id, username, site, ws);
 
   if (messageSession === null) {
     messageSession = new MessageSession(person);
@@ -248,9 +248,10 @@ const processIncomingMessage = (jsonData, ws) => {
 
   switch (message.type) {
     case 'add-new-person':
-      addNewPerson(message.data.userId, message.data.username, ws);
+      addNewPerson(message.data.userId, message.data.username, message.data.site, ws);
       break;
     case 'heart-beat':
+      console.log('heart-beat from ', message.data.userId, message.data.username, message.data.site);
       break;
     case 'chat-message':
       recordChat(message.data, ws);
@@ -290,6 +291,7 @@ wss.on('connection', (ws) => {
         }
       }
       updateListOfOnlineUsers();
+      console.log('person left', personLeft.id, personLeft.username, personLeft.site);
     }
     if (!messageSession.peopleArr.length) {
       messageSession = null;
